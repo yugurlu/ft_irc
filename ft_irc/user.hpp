@@ -16,6 +16,7 @@ class User {
         string  userName;
         string  nickName;
         string  clientName;
+        string  hostName;
 
     public:
         int     socket; 
@@ -23,7 +24,6 @@ class User {
         bool    _isRegister;
         bool    _isNicked;
         bool    _isUser;
-        string  hostname;
 
         User();
         User(int);
@@ -41,7 +41,11 @@ class User {
         void setClientName(string);
         string getClientName();
 
+        string getHostName();
+        void    setHostName(string);
+
         void setSocket(int);
+        string getPrefix();
 };
 
 #endif

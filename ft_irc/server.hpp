@@ -14,6 +14,7 @@
 #include "user.hpp"
 #include "commands.hpp"
 #include "channel.hpp"
+#include "numeric.hpp"
 
 using std::endl;
 using std::cout;

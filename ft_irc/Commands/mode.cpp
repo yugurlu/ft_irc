@@ -16,19 +16,19 @@ void Commands::Mode(User& user, vector<Channel> &channels, int clientSocket)
                     if (operation[0] == '+')
                     {
                         channel->addAdmin(args[3]);
-                        SendToClient(modifyUser->socket, modifyUser->getClientName() + " MODE You have been promoted admin!\n");
-                        SendToClient(clientSocket, user.getClientName() + " MODE You promoted admin!\n");
+                        sendToClient(user, modifyUser->socket, " MODE You have been promoted admin!"); //
+                        sendToClient(user, clientSocket, " MODE You promoted admin!"); //
                     }
                     else if (operation[0] == '-')
                     {
                         channel->removeAdmin(args[3]);
-                        SendToClient(modifyUser->socket, modifyUser->getClientName() + " MODE You reduced it\n");
-                        SendToClient(clientSocket, user.getClientName() + " MODE You were reduced!\n");
+                        sendToClient(user, modifyUser->socket, " MODE You reduced it"); //
+                        sendToClient(user, clientSocket, " MODE You were reduced!"); //
                     }
                 }
             }
-            else errorHandle(user, "", clientSocket, ERR_NOSUCHCHANNEL);
+            else sendToClient(user, clientSocket, ERR_NOSUCHCHANNEL(channel->getName()));
         }
-        else errorHandle(user, "", clientSocket, ERR_NEEDMOREPARAMS);
+        else sendToClient(user, clientSocket, ERR_NEEDMOREPARAMS(args[0]));
     }
 }

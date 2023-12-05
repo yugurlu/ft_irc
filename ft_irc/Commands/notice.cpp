@@ -15,10 +15,7 @@ void Commands::Notice(User &user, vector<Channel> &channels, map<int, User> &use
                 for (; itUser != users.end(); itUser++)
                 {
                     if ((*itUser)->getNickName() != user.getNickName())
-                    {
-                        cout << (*itUser)->socket << endl;
-                        SendToClient((*itUser)->socket, (*itUser)->getClientName() + " NOTICE " + user.getNickName() + ": " + *msg + "\n");
-                    }
+                        sendToClient(user, (*itUser)->socket, " NOTICE " + user.getNickName() + ": " + *msg);
                 }
                 return;
             }
@@ -30,8 +27,6 @@ void Commands::Notice(User &user, vector<Channel> &channels, map<int, User> &use
 
         User *reciverUser = findUser(users);
         if (reciverUser)
-            SendToClient(reciverUser->socket, reciverUser->getClientName() + " NOTICE " + *msg + "\n");
-        else
-            return;
+            sendToClient(user, reciverUser->socket, " NOTICE " + *msg);
     }
 }

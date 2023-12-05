@@ -14,7 +14,7 @@
 #include <sstream>
 #include "user.hpp"
 #include "channel.hpp"
-#include "errMsgs.hpp"
+#include "numeric.hpp"
 
 using std::endl;
 using std::cout;
@@ -43,14 +43,19 @@ class Commands {
         void Topic(User&, vector<Channel> &, int);
         void Privmsg(User&, vector<Channel> &, map<int, User> &, int);
         void Notice(User&, vector<Channel> &, map<int, User> &);
+        void who(Channel &channel);
         
+        
+        string getNickNames(vector<User *>);
+        void getUsersInfo(Channel &channel);
         Channel* findChannel(vector<Channel> &);
         User* findUser(map<int, User> &);
         void findCommand(map<int, User> &, vector<Channel> &, int, string);
         void handleCommand(map<int, User> &, vector<Channel> &, int, string, string);
-        void errorHandle(User , string, int, int);
+        string getPrefix(User &);
+
 };
 
-void SendToClient(int, const std::string);
+void sendToClient(User&, int, string);
 
 #endif

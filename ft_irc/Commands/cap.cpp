@@ -2,5 +2,5 @@
 
 void Commands::Cap(User &user, int clientSocket)
 {
-    SendToClient(clientSocket, user.getClientName() +  " CAP * LS :multi-refix sasl\r\n");
+    sendToClient(user, clientSocket, " CAP * LS :multi-refix sasl");
 }

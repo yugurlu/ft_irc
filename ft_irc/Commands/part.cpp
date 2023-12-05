@@ -19,13 +19,13 @@ void Commands::Part(User &user, vector<Channel> &channels, int clientSocket)
                         vector<User *> usersInChannel = itChannels->getUsers();
                         vector<User *>::iterator itUserInChannel = usersInChannel.begin();
                         for (; itUserInChannel != usersInChannel.end(); itUserInChannel++)
-                            SendToClient((*itUserInChannel)->socket, user.getNickName() + " left this channel! Reason: " + *(args.begin() + 2) + "\n");
+                            sendToClient(user, (*itUserInChannel)->socket, user.getNickName() + " left this channel! Reason: " + *(args.begin() + 2));
                         return;
                     }
                 }
-                errorHandle(user, "", clientSocket, ERR_NOSUCHCHANNEL);
+                sendToClient(user, clientSocket, "ERR_NOSUCHCHANNEL()"); // kanal ismi gelicek
             }
         }
-        else errorHandle(user, "", clientSocket, ERR_NEEDMOREPARAMS);
+        else sendToClient(user, clientSocket, ERR_NEEDMOREPARAMS(args[0]));
     }
 }

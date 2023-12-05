@@ -10,14 +10,14 @@ void Commands::Kick(User &user, vector<Channel> &channels, int clientSocket)
             string reason = args[3];
             Channel *channel = findChannel(channels);
             if(!channel)
-                errorHandle(user, "", clientSocket, ERR_NOSUCHCHANNEL);
+                sendToClient(user, clientSocket, ERR_NOSUCHCHANNEL(channel->getName()));
             else if (channel->userIsTheAdmin(user.getNickName()))
             {
                 User *kickUser = channel->getUser(kickNickName); 
-                SendToClient(kickUser->socket, kickUser->getClientName() + " KICK You're kicked for Reason: " + reason + "\n");
+                sendToClient(user, kickUser->socket, " KICK You're kicked for Reason: " + reason);
                 channel->removeUser(kickNickName);
             }
         }
-        else errorHandle(user, "", clientSocket, ERR_NEEDMOREPARAMS);
+        else sendToClient(user, clientSocket, ERR_NEEDMOREPARAMS(args[0]));
    }
 }

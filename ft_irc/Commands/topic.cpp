@@ -16,11 +16,12 @@ void Commands::Topic(User &user, vector<Channel> &channels, int clientSocket)
                     vector<User*> vecUser = channel->getUsers();
                     vector<User*>::iterator it = vecUser.begin();
                     for(; it != vecUser.end(); it++)
-                        SendToClient((*it)->socket, (*it)->getClientName() + " TOPIC Topic has chanced: " + *topic + "!\n");
+                        sendToClient(user, (*it)->socket, RPL_TOPIC(user.getNickName(), channel->getName(), *topic)); //*
                 }
             }
-            else errorHandle(user, "", clientSocket, ERR_NOSUCHCHANNEL);
+            else sendToClient(user, clientSocket, ERR_NOSUCHCHANNEL(channel->getName()));
+
         }
-        else errorHandle(user, "", clientSocket, ERR_NEEDMOREPARAMS);
+        else sendToClient(user, clientSocket,ERR_NEEDMOREPARAMS(args[0])); //
     }
 }

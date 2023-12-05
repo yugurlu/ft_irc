@@ -91,10 +91,9 @@ void Server::Start() {
                 std::cerr << "Host error!" << endl;
             }
             string temp(getHostName);
-            this->Users[newSocket].hostname = temp;
+            this->Users[newSocket].setHostName(temp);
             this->Users[newSocket].setClientName(":!@" + hostName);
-            std::string welcomeMessage = this->Users[newSocket].getClientName() + " :Welcome to FT_IRC! You can use USER and NICK command!\n";
-            SendToClient(newSocket, welcomeMessage);
+            //std::string welcomeMessage = this->Users[newSocket].getClientName() + " Welcome to FT_IRC! You can use USER and NICK command!\n";
         }
 
         for (size_t i = 0; i < _clientSockets.size(); i++) {
@@ -144,7 +143,7 @@ void Server::resetServer(int _clientSocket)
             vector<User *> usersInChannel = itChannel->getUsers();
             vector<User *>::iterator itUserInChannel = usersInChannel.begin();
             for (; itUserInChannel != usersInChannel.end(); itUserInChannel++)
-                SendToClient((*itUserInChannel)->socket, Users[_clientSocket].getNickName() + " left this channel!\n");
+                sendToClient(*(*itUserInChannel), (*itUserInChannel)->socket, Users[_clientSocket].getNickName() + " left this channel!\n");
         }
     }
     this->Users.erase(_clientSocket);

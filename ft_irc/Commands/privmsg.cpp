@@ -15,29 +15,26 @@ void Commands::Privmsg(User &user, vector<Channel> &channels, map<int, User> &us
                 for (; itUser != users.end(); itUser++)
                 {
                     if ((*itUser)->getNickName() != user.getNickName())
-                    {
-                        cout << (*itUser)->socket << endl;
-                        SendToClient((*itUser)->socket, (*itUser)->getClientName() + " PRIVMSG " + user.getNickName() + ": " + *msg + "\n");
-                    }
+                        sendToClient(user, (*itUser)->socket, " PRIVMSG " + user.getNickName() + ": " + *msg);
                 }
                 return;
             }
             else
             {
-                errorHandle(user, channel->getName(), clientSocket, ERR_CANNOTSENDTOCHAN);
+                sendToClient(user, clientSocket, "ERR_CANNOTSENDTOCHAN()"); //
                 return ;
             }
         }
-        else if ((args.begin() + 1)[0] == "#")
+        else if (args[1][0] == '#')
         {
-            errorHandle(user, args[1], clientSocket, ERR_NOSUCHCHANNEL);
+            sendToClient(user, clientSocket, "ERR_NOSUCHCHANNEL()"); //
             return ;
         }
 
         User *reciverUser = findUser(users);
         if (reciverUser)
-            SendToClient(reciverUser->socket, reciverUser->getClientName() + " PRIVMSG " + *msg + "\n");
+            sendToClient(user, reciverUser->socket, " PRIVMSG " + *msg);
         else
-          errorHandle(user, "", clientSocket, 406);  
+          sendToClient(user, clientSocket, "ERR_WASNOSUCHNICK");  
     }
 }
