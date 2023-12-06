@@ -43,7 +43,8 @@ class Commands {
         void Topic(User&, vector<Channel> &, int);
         void Privmsg(User&, vector<Channel> &, map<int, User> &, int);
         void Notice(User&, vector<Channel> &, map<int, User> &);
-        void who(Channel &channel);
+        void who(vector<Channel> &, User &, int);
+
         
         
         string getNickNames(vector<User *>);

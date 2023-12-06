@@ -26,5 +26,7 @@
 #define ERR_USERNOTINCHANNEL(nick, channel) "441 " + nick + " " + channel + " :They aren't on that channel"
 #define ERR_CHANOPRIVSNEEDED(channel) "482 " + channel + " :You're not channel operator"
 #define ERR_USERONCHANNEL(nick, channel) "443 " + nick + " " + channel + " :is already on channel"
+#define ERR_CANNOTSENDTOCHAN(channel) "404 " + channel + " :Cannot send to channel"
+#define ERR_WASNOSUCHNICK(nick) "406 " + nick + " :There was no such nickname"
 
 #endif

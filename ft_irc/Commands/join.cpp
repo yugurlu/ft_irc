@@ -39,11 +39,13 @@ void Commands::Join(User &user, vector<Channel> &channels, int clientSocket)
                         vector<User*> users = (*itChannels).getUsers();
                         vector<User*>::iterator itUser = users.begin();
                         for(; itUser != users.end(); itUser++)
-                            sendToClient(user, (*itUser)->socket, " JOIN " + user.getNickName() + " has joined this channel : " + itChannels->getName());
+                            getUsersInfo(*itChannels);
                         User *userPtr = &user;
                         itChannels->addUser(userPtr);
                         sendToClient(user, clientSocket, " JOIN You are now in channel " + *itArgs);
+                        sendToClient(user, clientSocket, RPL_TOPIC(user.getNickName(), itChannels->getName(), itChannels->getTopic()));
                         getUsersInfo(*itChannels);
+                        sendToClient(user, clientSocket, RPL_ENDOFNAMES(itChannels->getName(), itChannels->getName()));
                         return;
                     }
                     else if (itChannels->getName() == *itArgs && itChannels->userOnTheChannel(user.getNickName()))
@@ -55,6 +57,9 @@ void Commands::Join(User &user, vector<Channel> &channels, int clientSocket)
                 User *userPtr = &user;
                 channels.push_back(Channel((*itArgs), userPtr));
                 sendToClient(user, clientSocket, " JOIN You are now in channel " + *itArgs);
+                sendToClient(user, clientSocket, RPL_TOPIC(user.getNickName(), (*itArgs), ""));//
+                getUsersInfo(channels.back());//
+                sendToClient(user, clientSocket, RPL_ENDOFNAMES(user.getNickName(), (*itArgs)));//
 
             }
         }

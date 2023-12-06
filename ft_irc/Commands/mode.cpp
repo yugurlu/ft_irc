@@ -4,31 +4,63 @@ void Commands::Mode(User& user, vector<Channel> &channels, int clientSocket)
 {
     if (user._isAuth)
     {
-        if(args.size() == 3)
+        if(args.size() < 2)
         {
-            string operation = args[2];
-            Channel *channel = findChannel(channels);
-            if (channel )
+            sendToClient(user, clientSocket, RPL_CHANNELMODEIS(user.getNickName(), "+nt"));
+            return;
+        }
+        Channel *channel = findChannel(channels);
+        if(!channel->userIsTheAdmin(user.getNickName()))
+        {
+            sendToClient(user, clientSocket, ERR_CHANOPRIVSNEEDED(channel->getName()));
+            return;
+        }
+        vector<string>::iterator itArgs = args.begin() + 2;
+        if (itArgs != args.end() && *itArgs == "+o")
+        {
+            itArgs++;
+            if (itArgs != args.end())
             {
-                if(channel->userIsTheAdmin(user.getNickName()) && operation.size() == 2 && operation.find('o'))
+                if (channel->userOnTheChannel(*itArgs))
                 {
-                    User *modifyUser = channel->getUser(args[3]);
-                    if (operation[0] == '+')
-                    {
-                        channel->addAdmin(args[3]);
-                        sendToClient(user, modifyUser->socket, " MODE You have been promoted admin!"); //
-                        sendToClient(user, clientSocket, " MODE You promoted admin!"); //
-                    }
-                    else if (operation[0] == '-')
-                    {
-                        channel->removeAdmin(args[3]);
-                        sendToClient(user, modifyUser->socket, " MODE You reduced it"); //
-                        sendToClient(user, clientSocket, " MODE You were reduced!"); //
-                    }
+                    channel->addAdmin(*itArgs);
+                    sendToClient(user, clientSocket, "MODE " + channel->getName() + " +o " + *itArgs);
+                    return;
+                }
+                else
+                {
+                    sendToClient(user, clientSocket, ERR_NOSUCHNICK(*itArgs));
+                    return;
                 }
             }
-            else sendToClient(user, clientSocket, ERR_NOSUCHCHANNEL(channel->getName()));
+            else
+            {
+                sendToClient(user, clientSocket, ERR_NEEDMOREPARAMS(args[0]));
+                return;
+            }
         }
-        else sendToClient(user, clientSocket, ERR_NEEDMOREPARAMS(args[0]));
+        else if (itArgs != args.end() && *itArgs == "-o")
+        {
+            itArgs++;
+            if (itArgs != args.end())
+            {
+                if (channel->userOnTheChannel(*itArgs))
+                {
+                    channel->removeAdmin(*itArgs);
+                    sendToClient(user, clientSocket, "MODE " + channel->getName() + " -o " + *itArgs);
+                    return;
+                }
+                else
+                {
+                    sendToClient(user, clientSocket, ERR_NOSUCHNICK(*itArgs));
+                    return;
+                }
+            }
+            else
+            {
+                sendToClient(user, clientSocket, ERR_NEEDMOREPARAMS(args[0]));
+                return;
+            }
+        }
     }
 }

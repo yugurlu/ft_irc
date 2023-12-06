@@ -67,13 +67,15 @@ void Commands::findCommand(map<int, User> &user, vector<Channel> &channels, int 
         this->Quit(user[clientSocket], channels, clientSocket);
     else if (*args.begin() == "NOTICE")
         this->Notice(user[clientSocket], channels, user);
+    else if (*args.begin() == "WHO")
+        this->who(channels, user[clientSocket], clientSocket);
     else
         this->UnknowCmd(user[clientSocket], clientSocket);
 }
 
 void    Commands::UnknowCmd(User &user, int clientSocket)
 {
-    sendToClient(user, clientSocket, "ERR_UNKNOWNCOMMAND(this->args[0])");
+    sendToClient(user, clientSocket, ERR_UNKNOWNCOMMAND(this->args[0]));
 }
 
 Channel*    Commands::findChannel(vector<Channel> &channels)

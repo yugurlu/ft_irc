@@ -20,13 +20,21 @@ void Commands::Notice(User &user, vector<Channel> &channels, map<int, User> &use
                 return;
             }
             else
+            {
+                sendToClient(user, user.socket, ERR_CANNOTSENDTOCHAN(channel->getName())); //
                 return ;
+            }
         }
-        else if ((args.begin() + 1)[0] == "#")
+        else if (args[1][0] == '#')
+        {
+            sendToClient(user, user.socket, ERR_NOSUCHCHANNEL(channel->getName())); //
             return ;
+        }
 
         User *reciverUser = findUser(users);
         if (reciverUser)
             sendToClient(user, reciverUser->socket, " NOTICE " + *msg);
+        else
+          sendToClient(user, user.socket, "ERR_WASNOSUCHNICK");  
     }
 }

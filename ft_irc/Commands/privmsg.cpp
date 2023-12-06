@@ -21,13 +21,13 @@ void Commands::Privmsg(User &user, vector<Channel> &channels, map<int, User> &us
             }
             else
             {
-                sendToClient(user, clientSocket, "ERR_CANNOTSENDTOCHAN()"); //
+                sendToClient(user, clientSocket, ERR_CANNOTSENDTOCHAN(channel->getName())); //
                 return ;
             }
         }
         else if (args[1][0] == '#')
         {
-            sendToClient(user, clientSocket, "ERR_NOSUCHCHANNEL()"); //
+            sendToClient(user, clientSocket, ERR_NOSUCHCHANNEL(channel->getName())); //
             return ;
         }
 
@@ -35,6 +35,6 @@ void Commands::Privmsg(User &user, vector<Channel> &channels, map<int, User> &us
         if (reciverUser)
             sendToClient(user, reciverUser->socket, " PRIVMSG " + *msg);
         else
-          sendToClient(user, clientSocket, "ERR_WASNOSUCHNICK");  
+          sendToClient(user, clientSocket, ERR_WASNOSUCHNICK(user.getNickName()));
     }
 }

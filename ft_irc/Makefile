@@ -19,7 +19,8 @@ FILE = server.cpp \
 	./commands/topic.cpp \
 	./commands/mode.cpp \
 	./commands/cap.cpp \
-	./commands/notice.cpp 
+	./commands/notice.cpp \
+	./commands/who.cpp 
 RM = rm -rf
 
 all: $(NAME)
