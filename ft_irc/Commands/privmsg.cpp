@@ -9,12 +9,12 @@ void Commands::Privmsg(User &user, vector<Channel> &channels, map<int, User> &us
         {
             if (itArgs != args.end() && (*itArgs)[0] == '#')
             {
+                string message = "PRIVMSG " + *(args.begin() + 1) + " :" + *(args.begin() + 2);
                 for (vector<Channel>::iterator itChannels = channels.begin(); itChannels != channels.end(); itChannels++)
                 {
-                    string message = "PRIVMSG " + *(args.begin() + 1) + " :" + *(args.begin() + 2);
                     if (itChannels->getName() == *itArgs && itChannels->userOnTheChannel(user.getNickName()))
                     {
-                        itChannels->sendMessageToChannel(user, message);
+                        itChannels->sendMessageToChannel(user, message, user.getNickName());
                         return;
                     }
                     else if (itChannels->getName() == *itArgs && !itChannels->userOnTheChannel(user.getNickName()))
@@ -31,7 +31,7 @@ void Commands::Privmsg(User &user, vector<Channel> &channels, map<int, User> &us
                 {
                     if (itUsers->second.getNickName() == *itArgs)
                     {
-                        sendToClient(user, clientSocket, "PRIVMSG " + itUsers->second.getNickName() + " :" + *(args.begin() + 2));
+                        sendToClient(user, itUsers->second.socket, "PRIVMSG " + itUsers->second.getNickName() + " :" + *(args.begin() + 2));
                         return;
                     }
                 }

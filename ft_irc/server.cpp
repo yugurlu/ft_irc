@@ -93,7 +93,6 @@ void Server::Start() {
             string temp(getHostName);
             this->Users[newSocket].setHostName(temp);
             this->Users[newSocket].setClientName(":!@" + hostName);
-            //std::string welcomeMessage = this->Users[newSocket].getClientName() + " Welcome to FT_IRC! You can use USER and NICK command!\n";
         }
 
         for (size_t i = 0; i < _clientSockets.size(); i++) {
@@ -106,6 +105,7 @@ void Server::Start() {
                 string message(buffer);
                 if(message.size() && message[0] != '\n' && *(message.end() - 1) == '\n')
                 {
+                    cout << message;
                     Cmd(ctrlD + message, _clientSocket, _password);
                     ctrlD.clear();
                 }
@@ -113,7 +113,7 @@ void Server::Start() {
                     ctrlD += message + " ";
                 if (message.find("QUIT") != string::npos || bytesRead <= 0) {
                     cout << _clientSocket << " Connection closed..." << endl;     
-                    resetServer(_clientSocket);
+                    resetClient(_clientSocket);
                     close(_clientSocket);
                     _clientSockets.erase(_clientSockets.begin() + i);
                 } 
@@ -129,7 +129,7 @@ void Server::Cmd(string msg, int clientSocket, string password)
     this->commands.handleCommand(this->Users, this->channels, clientSocket, msg, password);
 }
 
-void Server::resetServer(int _clientSocket) 
+void Server::resetClient(int _clientSocket) 
 {
     vector<Channel>::iterator itChannel = channels.begin();
     for (; itChannel != channels.end(); itChannel++)

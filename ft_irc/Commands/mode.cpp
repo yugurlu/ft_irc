@@ -24,20 +24,13 @@ void Commands::Mode(User& user, vector<Channel> &channels, int clientSocket)
                 if (channel->userOnTheChannel(*itArgs))
                 {
                     channel->addAdmin(*itArgs);
-                    sendToClient(user, clientSocket, "MODE " + channel->getName() + " +o " + *itArgs);
-                    return;
+                    channel->sendMessageToChannel(user, "MODE " + channel->getName() + " +o " + *itArgs, "");
                 }
                 else
-                {
                     sendToClient(user, clientSocket, ERR_NOSUCHNICK(*itArgs));
-                    return;
-                }
             }
             else
-            {
                 sendToClient(user, clientSocket, ERR_NEEDMOREPARAMS(args[0]));
-                return;
-            }
         }
         else if (itArgs != args.end() && *itArgs == "-o")
         {
@@ -47,20 +40,13 @@ void Commands::Mode(User& user, vector<Channel> &channels, int clientSocket)
                 if (channel->userOnTheChannel(*itArgs))
                 {
                     channel->removeAdmin(*itArgs);
-                    sendToClient(user, clientSocket, "MODE " + channel->getName() + " -o " + *itArgs);
-                    return;
+                    channel->sendMessageToChannel(user, "MODE " + channel->getName() + " -o " + *itArgs, "");
                 }
                 else
-                {
                     sendToClient(user, clientSocket, ERR_NOSUCHNICK(*itArgs));
-                    return;
-                }
             }
             else
-            {
                 sendToClient(user, clientSocket, ERR_NEEDMOREPARAMS(args[0]));
-                return;
-            }
         }
     }
 }

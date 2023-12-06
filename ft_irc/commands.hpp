@@ -44,15 +44,16 @@ class Commands {
         void Topic(User&, vector<Channel> &, int);
         void Privmsg(User&, vector<Channel> &, map<int, User> &, int);
         void Notice(User&, vector<Channel> &, map<int, User> &);
-        void who(vector<Channel> &, User &, int);
+        void Who(map<int, User> &, vector<Channel> &, User &, int);
 
-        
-        void sendUsersInfo(Channel &, User &);
+        void sendUsersInfo(Channel &, User &, int);
         Channel* findChannel(vector<Channel> &);
         User* findUser(map<int, User> &);
         void findCommand(map<int, User> &, vector<Channel> &, int, string);
         void handleCommand(map<int, User> &, vector<Channel> &, int, string, string);
         string getPrefix(User &);
+        void isThereUserInChannel(vector<Channel> &, Channel&);
+
 
 };
 

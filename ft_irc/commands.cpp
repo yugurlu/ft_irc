@@ -39,38 +39,38 @@ void Commands::handleCommand(map<int, User> &user, vector<Channel> &channels, in
 }
 
 
-void Commands::findCommand(map<int, User> &user, vector<Channel> &channels, int clientSocket, string password) 
+void Commands::findCommand(map<int, User> &users, vector<Channel> &channels, int clientSocket, string password) 
 {
     if (*args.begin() == "NICK")
-        this->Nick(user, clientSocket);
+        this->Nick(users, clientSocket);
     else if (*args.begin() == "PASS")
-        this->Pass(user[clientSocket], clientSocket, password);
+        this->Pass(users[clientSocket], clientSocket, password);
     else if(*args.begin() == "CAP")
-        this->Cap(user[clientSocket], clientSocket);
+        this->Cap(users[clientSocket], clientSocket);
     else if (*args.begin() == "USER")
-        this->Usèr(user[clientSocket], clientSocket);
+        this->Usèr(users[clientSocket], clientSocket);
     else if (*args.begin() == "PING")  
-        this->Ping(user[clientSocket], clientSocket);
+        this->Ping(users[clientSocket], clientSocket);
     else if (*args.begin() == "JOIN")
-        this->Join(user[clientSocket], channels, clientSocket);
+        this->Join(users[clientSocket], channels, clientSocket);
     else if (*args.begin() == "KICK")
-        this->Kick(user[clientSocket], channels, clientSocket);
+        this->Kick(users[clientSocket], channels, clientSocket);
     else if (*args.begin() == "PART")
-        this->Part(user[clientSocket], channels, clientSocket);
+        this->Part(users[clientSocket], channels, clientSocket);
     else if (*args.begin() == "PRIVMSG")
-        this->Privmsg(user[clientSocket], channels, user, clientSocket);
+        this->Privmsg(users[clientSocket], channels, users, clientSocket);
     else if (*args.begin() == "TOPIC")
-        this->Topic(user[clientSocket], channels, clientSocket);
+        this->Topic(users[clientSocket], channels, clientSocket);
     else if (*args.begin() == "MODE")
-        this->Mode(user[clientSocket], channels, clientSocket);
+        this->Mode(users[clientSocket], channels, clientSocket);
     else if (*args.begin() == "QUIT")
-        this->Quit(user[clientSocket], channels, clientSocket);
+        this->Quit(users[clientSocket], channels, clientSocket);
     else if (*args.begin() == "NOTICE")
-        this->Notice(user[clientSocket], channels, user);
+        this->Notice(users[clientSocket], channels, users);
     else if (*args.begin() == "WHO")
-        this->who(channels, user[clientSocket], clientSocket);
+        this->Who(users, channels, users[clientSocket], clientSocket);
     else
-        this->UnknowCmd(user[clientSocket], clientSocket);
+        this->UnknowCmd(users[clientSocket], clientSocket);
 }
 
 void    Commands::UnknowCmd(User &user, int clientSocket)
@@ -98,4 +98,19 @@ User* Commands::findUser(map<int, User> &users)
             return &((*itUser).second);
     }
     return NULL;
+}
+
+void Commands::isThereUserInChannel(vector<Channel> &channels, Channel &checkChannel)
+{
+    if(checkChannel.getUsers().size() == 0)
+    {
+        for (vector<Channel>::iterator itChannels = channels.begin(); itChannels != channels.end(); itChannels++)
+        {
+            if ((*itChannels).getName() == checkChannel.getName())
+            {
+                channels.erase(itChannels);
+                break;
+            }
+        }
+    }
 }

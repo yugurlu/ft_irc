@@ -1,9 +1,7 @@
 #include "../commands.hpp"
 
-void Commands::Quit(User& user, vector<Channel> &channel, int clienSocket) {
-    (void)user;
-    (void)channel;
-    (void)clienSocket;
+void Commands::Quit(User& user, vector<Channel> &channel, int clienSocket) 
+{
     vector<Channel>::iterator itChannels = channel.begin();
     for (; itChannels != channel.end(); itChannels++)
     {

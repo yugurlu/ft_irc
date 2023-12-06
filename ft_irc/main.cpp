@@ -9,7 +9,7 @@ int main(int argc, char *argv[]) {
     }
 
     int port = std::atoi(argv[1]);
-    if(port < 49152) 
+    if(port > 0 && port < 65537) 
     {
         Server server(port);
         server.setPassword(argv[2]);

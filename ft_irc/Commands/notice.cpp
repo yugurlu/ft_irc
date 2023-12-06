@@ -2,39 +2,34 @@
 
 void Commands::Notice(User &user, vector<Channel> &channels, map<int, User> &users)
 {
-    if (user._isAuth)
+     if (user._isAuth)
     {
-        vector<string>::iterator msg = args.begin() + 2;
-        Channel *channel = findChannel(channels);
-        if (channel)
+        vector<string>::iterator itArgs = args.begin() + 1;
+        if (args.size() >= 3)
         {
-            if(channel->userOnTheChannel(user.getNickName()))
+            if (itArgs != args.end() && (*itArgs)[0] == '#')
             {
-                vector<User *> users = channel->getUsers();
-                vector<User *>::iterator itUser = users.begin();
-                for (; itUser != users.end(); itUser++)
+                string message = "PRIVMSG " + *(args.begin() + 1) + " :" + *(args.begin() + 2);
+                for (vector<Channel>::iterator itChannels = channels.begin(); itChannels != channels.end(); itChannels++)
                 {
-                    if ((*itUser)->getNickName() != user.getNickName())
-                        sendToClient(user, (*itUser)->socket, " NOTICE " + user.getNickName() + ": " + *msg);
+                    if (itChannels->getName() == *itArgs && itChannels->userOnTheChannel(user.getNickName()))
+                    {
+                        itChannels->sendMessageToChannel(user, message, user.getNickName());
+                        return;
+                    }
                 }
-                return;
             }
             else
             {
-                sendToClient(user, user.socket, ERR_CANNOTSENDTOCHAN(channel->getName())); //
-                return ;
+                for (map<int, User>::iterator itUsers = users.begin(); itUsers != users.end(); itUsers++)
+                {
+                    if (itUsers->second.getNickName() == *itArgs)
+                    {
+                        sendToClient(user, itUsers->second.socket, "PRIVMSG " + itUsers->second.getNickName() + " :" + *(args.begin() + 2));
+                        return;
+                    }
+                }
             }
         }
-        else if (args[1][0] == '#')
-        {
-            sendToClient(user, user.socket, ERR_NOSUCHCHANNEL(channel->getName())); //
-            return ;
-        }
-
-        User *reciverUser = findUser(users);
-        if (reciverUser)
-            sendToClient(user, reciverUser->socket, " NOTICE " + *msg);
-        else
-          sendToClient(user, user.socket, "ERR_WASNOSUCHNICK");  
     }
 }

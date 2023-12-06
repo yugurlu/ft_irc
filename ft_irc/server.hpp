@@ -45,7 +45,7 @@ class Server {
         void Cmd(std::string, int, string);
         void setPassword(string);
         string getPassword(void);
-        void resetServer(int);
+        void resetClient(int);
 };
 
 #endif

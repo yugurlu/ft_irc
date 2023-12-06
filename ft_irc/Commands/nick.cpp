@@ -16,9 +16,7 @@ void Commands::Nick(map<int, User> &users, int clientSocket) {
         }
         if(users[clientSocket]._isNicked)
         {
-            string msg = users[clientSocket].getNickName() + " NICK" + " changed his nickname to " + *itArgs;
             users[clientSocket].setNickName(*itArgs);
-            sendToClient(users[clientSocket], clientSocket, " :" + msg);
             return ;
         }
         else 

@@ -114,10 +114,11 @@ vector<User *> Channel::getAdmins(void)
     return this->admins;
 }
 
-void Channel::sendMessageToChannel(User &sender, string message)
+void Channel::sendMessageToChannel(User &sender, string message, string optionalName)
 {
     for (vector<User *>::iterator itUser = this->users.begin(); itUser != this->users.end(); itUser++)
     {
-        sendToClient(sender, (*itUser)->socket, message);
+        if (optionalName.empty() || optionalName != (*itUser)->getNickName())
+            sendToClient(sender, (*itUser)->socket, message);  
     }
 }

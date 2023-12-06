@@ -1,26 +1,31 @@
 #include "../commands.hpp"
 
-void Commands::who(vector<Channel> &channels, User &user, int clientSocket)
+void Commands::Who(map<int, User> &users, vector<Channel> &channels, User &user, int clientSocket)
 {
     if (user._isAuth)
     {
-        if (args.size() == 2)
+        if(args.size() < 1)
+        {
+            sendToClient(user, clientSocket, ERR_NEEDMOREPARAMS(args[0]));
+            return;
+        }
+        if (args[1][0] == '#')
         {
             Channel *channel = findChannel(channels);
-            if (channel)
+            if(!channel)
             {
-                vector<User *> users = channel->getUsers();
-                vector<User *>::iterator itUsers = users.begin();
-                for (; itUsers != users.end(); itUsers++)
-                {
-                    sendToClient(user, (*itUsers)->socket, RPL_WHOREPLY(user.getNickName(), channel->getName(), (*itUsers)->getUserName(), (*itUsers)->getHostName(), "localhost", (*itUsers)->getNickName(), "*", " 0", (*itUsers)->getRealName()));
-                }
-                sendToClient(user, clientSocket, RPL_ENDOFWHO(channel->getName(), channel->getName()));
-            }
-            else
                 sendToClient(user, clientSocket, ERR_NOSUCHCHANNEL(channel->getName()));
+                return;
+            }
+            vector<User *> usersInChannel = channel->getUsers();
+            for(vector<User *>::iterator itUsers = usersInChannel.begin(); itUsers != usersInChannel.end(); itUsers++)
+                sendToClient(user, clientSocket, RPL_WHOREPLY((*itUsers)->getNickName(), channel->getName(), (*itUsers)->getUserName(), (*itUsers)->getHostName(), "localhost", (*itUsers)->getNickName(), "*", "0 ", (*itUsers)->getRealName()));
+            sendToClient(user, clientSocket, RPL_ENDOFWHO((*itUsers)->getNickName(), channel->getName()));
+            return;
         }
-        else
-            sendToClient(user, clientSocket, ERR_NEEDMOREPARAMS(args[0]));
+    
+        User *userPtr = findUser(users);
+        if(userPtr)
+            sendToClient(user, clientSocket, RPL_WHOREPLY(userPtr->getNickName(),"*", userPtr->getUserName(), userPtr->getHostName(), "localhost", userPtr->getNickName(), "*", "0 ", (*userPtr).getRealName()));
     }
 }

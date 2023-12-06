@@ -22,18 +22,11 @@ void Commands::Topic(User &user, vector<Channel> &channels, int clientSocket)
             {
                 channel->setTopic(*itArgs);
                 sendToClient(user, clientSocket, RPL_TOPIC(user.getNickName(), channel->getName(), channel->getTopic()));
-                return;
             }
             else
-            {
                 sendToClient(user, clientSocket, ERR_CHANOPRIVSNEEDED(channel->getName()));
-                return;
-            }
         }
         else
-        {
             sendToClient(user, clientSocket, RPL_TOPIC(user.getNickName(), channel->getName(), channel->getTopic()));
-            return;
-        }
     }
 }
