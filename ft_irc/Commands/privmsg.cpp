@@ -4,37 +4,41 @@ void Commands::Privmsg(User &user, vector<Channel> &channels, map<int, User> &us
 {
     if (user._isAuth)
     {
-        vector<string>::iterator msg = args.begin() + 2;
-        Channel *channel = findChannel(channels);
-        if (channel)
+        vector<string>::iterator itArgs = args.begin() + 1;
+        if (args.size() >= 3)
         {
-            if(channel->userOnTheChannel(user.getNickName()))
+            if (itArgs != args.end() && (*itArgs)[0] == '#')
             {
-                vector<User *> users = channel->getUsers();
-                vector<User *>::iterator itUser = users.begin();
-                for (; itUser != users.end(); itUser++)
+                for (vector<Channel>::iterator itChannels = channels.begin(); itChannels != channels.end(); itChannels++)
                 {
-                    if ((*itUser)->getNickName() != user.getNickName())
-                        sendToClient(user, (*itUser)->socket, " PRIVMSG " + user.getNickName() + ": " + *msg);
+                    string message = "PRIVMSG " + *(args.begin() + 1) + " :" + *(args.begin() + 2);
+                    if (itChannels->getName() == *itArgs && itChannels->userOnTheChannel(user.getNickName()))
+                    {
+                        itChannels->sendMessageToChannel(user, message);
+                        return;
+                    }
+                    else if (itChannels->getName() == *itArgs && !itChannels->userOnTheChannel(user.getNickName()))
+                    {
+                        sendToClient(user, clientSocket, ERR_CANNOTSENDTOCHAN(itChannels->getName()));
+                        return;
+                    }
                 }
-                return;
+                sendToClient(user, clientSocket, "ERR_NOSUCHCHANNEL()");
             }
             else
             {
-                sendToClient(user, clientSocket, ERR_CANNOTSENDTOCHAN(channel->getName())); //
-                return ;
+                for (map<int, User>::iterator itUsers = users.begin(); itUsers != users.end(); itUsers++)
+                {
+                    if (itUsers->second.getNickName() == *itArgs)
+                    {
+                        sendToClient(user, clientSocket, "PRIVMSG " + itUsers->second.getNickName() + " :" + *(args.begin() + 2));
+                        return;
+                    }
+                }
+                sendToClient(user, clientSocket, ERR_NOSUCHNICK(user.getNickName()));
             }
         }
-        else if (args[1][0] == '#')
-        {
-            sendToClient(user, clientSocket, ERR_NOSUCHCHANNEL(channel->getName())); //
-            return ;
-        }
-
-        User *reciverUser = findUser(users);
-        if (reciverUser)
-            sendToClient(user, reciverUser->socket, " PRIVMSG " + *msg);
         else
-          sendToClient(user, clientSocket, ERR_WASNOSUCHNICK(user.getNickName()));
+            sendToClient(user, clientSocket, ERR_NEEDMOREPARAMS(args[0]));
     }
 }

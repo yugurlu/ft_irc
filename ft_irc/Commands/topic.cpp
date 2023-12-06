@@ -3,25 +3,37 @@
 void Commands::Topic(User &user, vector<Channel> &channels, int clientSocket)
 {
     if (user._isAuth)
-    {  
-        if(args.size() == 3)
+    {
+        if (args.size() < 2)
         {
-            Channel *channel = findChannel(channels);
-            if (channel)
-            {
-                if(channel->userIsTheAdmin(user.getNickName()))
-                {
-                    vector<string>::iterator topic = args.begin() + 2;
-                    channel->setTopic(*topic);
-                    vector<User*> vecUser = channel->getUsers();
-                    vector<User*>::iterator it = vecUser.begin();
-                    for(; it != vecUser.end(); it++)
-                        sendToClient(user, (*it)->socket, RPL_TOPIC(user.getNickName(), channel->getName(), *topic)); //*
-                }
-            }
-            else sendToClient(user, clientSocket, ERR_NOSUCHCHANNEL(channel->getName()));
-
+            sendToClient(user, clientSocket, ERR_NEEDMOREPARAMS(args[0]));
+            return;
         }
-        else sendToClient(user, clientSocket,ERR_NEEDMOREPARAMS(args[0])); //
+        Channel *channel = findChannel(channels);
+        if (!channel->userOnTheChannel(user.getNickName()))
+        {
+            sendToClient(user, clientSocket, ERR_NOTONCHANNEL(channel->getName()));
+            return;
+        }
+        vector<string>::iterator itArgs = args.begin() + 2;
+        if (itArgs != args.end())
+        {
+            if (channel->userIsTheAdmin(user.getNickName()))
+            {
+                channel->setTopic(*itArgs);
+                sendToClient(user, clientSocket, RPL_TOPIC(user.getNickName(), channel->getName(), channel->getTopic()));
+                return;
+            }
+            else
+            {
+                sendToClient(user, clientSocket, ERR_CHANOPRIVSNEEDED(channel->getName()));
+                return;
+            }
+        }
+        else
+        {
+            sendToClient(user, clientSocket, RPL_TOPIC(user.getNickName(), channel->getName(), channel->getTopic()));
+            return;
+        }
     }
 }

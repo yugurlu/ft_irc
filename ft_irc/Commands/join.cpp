@@ -34,7 +34,10 @@ void Commands::Join(User &user, vector<Channel> &channels, int clientSocket)
                         User *userPtr = &user;
                         itChannels->addUser(userPtr);
                         sendToClient(user, clientSocket, " JOIN You are now in channel " + *itArgs);
-                        sendToClient(user, clientSocket, RPL_TOPIC(user.getNickName(), itChannels->getName(), itChannels->getTopic()));
+                        if (itChannels->getTopic().empty())
+                            sendToClient(user, clientSocket, RPL_NOTOPIC(user.getNickName(), itChannels->getName()));
+                        else
+                            sendToClient(user, clientSocket, RPL_TOPIC(user.getNickName(), itChannels->getName(), itChannels->getTopic()));
                         sendUsersInfo((*itChannels), user);
                         return;
                     }
