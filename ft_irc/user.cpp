@@ -86,3 +86,10 @@ string User::getPrefix()
 {
     return ":" + this->getNickName() + "!" + this->getUserName() + "@" + this->getHostName() + ":";
 }
+
+void    sendToClient(User &sender, int receiverSocket, string message)
+{
+    string buffer = sender.getPrefix() + " "  +  message + "\r\n";
+    cout << "sent to client" << " " << message << endl;
+    send(receiverSocket, buffer.c_str(), buffer.size(), 0);
+}

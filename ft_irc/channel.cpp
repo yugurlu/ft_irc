@@ -3,6 +3,7 @@
 Channel::Channel(string name, User *user)
 {
     this->name = name;
+    this->topic = "";
     users.push_back(user);
     admins.push_back(user);
 }
@@ -111,4 +112,12 @@ vector<User *> Channel::getUsers(void)
 vector<User *> Channel::getAdmins(void)
 {
     return this->admins;
+}
+
+void Channel::sendMessageToChannel(User &sender, string message)
+{
+    for (vector<User *>::iterator itUser = this->users.begin(); itUser != this->users.end(); itUser++)
+    {
+        sendToClient(sender, (*itUser)->socket, message);
+    }
 }

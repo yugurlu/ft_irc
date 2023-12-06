@@ -4,6 +4,9 @@
 #include <iostream>
 #include <string>
 #include <unistd.h>
+#include <cstdlib>
+#include <sys/types.h>
+#include <sys/socket.h>
 
 using std::string;
 using std::cout;
@@ -47,5 +50,7 @@ class User {
         void setSocket(int);
         string getPrefix();
 };
+
+void sendToClient(User&, int, string);
 
 #endif

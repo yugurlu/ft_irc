@@ -41,6 +41,8 @@ class Channel
         User *getUser(string);
         vector<User *> getUsers(void);
         vector<User *> getAdmins(void);
+
+        void sendMessageToChannel(User &, string);
 };
 
 #endif

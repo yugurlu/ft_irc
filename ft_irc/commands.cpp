@@ -89,13 +89,6 @@ Channel*    Commands::findChannel(vector<Channel> &channels)
     return NULL;
 }
 
-void    sendToClient(User &sender, int receiverSocket, string message)
-{
-    string buffer = sender.getPrefix() + " "  +  message + "\r\n";
-    cout << "sent to client" << " " << message << endl;
-    send(receiverSocket, buffer.c_str(), buffer.size(), 0);
-}
-
 User* Commands::findUser(map<int, User> &users)
 {
     vector<string>::iterator itArg = args.begin() + 1; 
@@ -106,23 +99,3 @@ User* Commands::findUser(map<int, User> &users)
     }
     return NULL;
 }
-
-// void Commands::sendToClient(User user, string channelName, int clientSocket, int errNum)
-// {
-//     string str;
-//     if(errNum == 461)
-//         str = user.getClientName() + " 461 " + *args.begin() +  ": Not enogh parameters\n";
-//     else if(errNum == 462)
-//         str = user.getClientName() + " :You may not reregister\n";
-//     else if(errNum == 464)
-//         str = user.getClientName() + " :Password incorrect\n";
-//     else if(errNum == 433)
-//         str = user.getClientName() + " " + channelName + " :Nickname is already in use\n";
-//     else if(errNum == 431)
-//         str = user.getClientName() + " :No nickname given\n";
-//     else if(errNum == 403)
-//         str = user.getClientName() + " " + channelName + " :No such channel\n";
-//     else if(errNum == 406)
-//         str = user.getClientName() + " :There was no such nickname\n";
-//     sendToClient(clientSocket, str);
-// }

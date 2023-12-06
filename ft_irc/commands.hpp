@@ -12,6 +12,7 @@
 #include <string>
 #include <map>
 #include <sstream>
+#include <algorithm>
 #include "user.hpp"
 #include "channel.hpp"
 #include "numeric.hpp"
@@ -46,9 +47,7 @@ class Commands {
         void who(vector<Channel> &, User &, int);
 
         
-        
-        string getNickNames(vector<User *>);
-        void getUsersInfo(Channel &channel);
+        void sendUsersInfo(Channel &, User &);
         Channel* findChannel(vector<Channel> &);
         User* findUser(map<int, User> &);
         void findCommand(map<int, User> &, vector<Channel> &, int, string);
@@ -56,7 +55,5 @@ class Commands {
         string getPrefix(User &);
 
 };
-
-void sendToClient(User&, int, string);
 
 #endif

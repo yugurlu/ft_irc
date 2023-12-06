@@ -1,25 +1,19 @@
 #include "../commands.hpp"
 
-string Commands::getNickNames(vector<User *> users)
+void Commands::sendUsersInfo(Channel &channel, User &user)
 {
-    vector<User *>::iterator itUsers = users.begin();
-    string nickNames;
-    for (; itUsers != users.end(); itUsers++)
-    {
-        nickNames += (*itUsers)->getNickName() + " ";
-    }
-    return nickNames;
-}
-
-void Commands::getUsersInfo(Channel &channel)
-{
+    string names;
     vector<User *> usersInChannel = channel.getUsers();
-    vector<User *>::iterator itUsers = usersInChannel.begin();
-    string nickNames = getNickNames(usersInChannel);
-    for(; itUsers != usersInChannel.end(); itUsers++)
+    for (vector<User *>::iterator itUserInChannel = usersInChannel.begin(); itUserInChannel != usersInChannel.end(); itUserInChannel++)
     {
-        sendToClient(*(*itUsers), (*itUsers)->socket, RPL_NAMREPLY((*itUsers)->getNickName(), channel.getName(), nickNames));
+        if (channel.userIsTheAdmin((*itUserInChannel)->getNickName()))
+        names += "@";
+        names += (*itUserInChannel)->getNickName().empty() ? (*itUserInChannel)->getUserName() : (*itUserInChannel)->getNickName();
+        if (itUserInChannel != usersInChannel.end() - 1)
+        names += " ";
     }
+    channel.sendMessageToChannel(user, RPL_NAMREPLY(user.getNickName(), channel.getName(), names));
+    channel.sendMessageToChannel(user, RPL_ENDOFNAMES(user.getNickName(), channel.getName()));
 }
 
 
@@ -36,16 +30,12 @@ void Commands::Join(User &user, vector<Channel> &channels, int clientSocket)
                 {
                     if (itChannels->getName() == *itArgs && !itChannels->userOnTheChannel(user.getNickName()))
                     {   
-                        vector<User*> users = (*itChannels).getUsers();
-                        vector<User*>::iterator itUser = users.begin();
-                        for(; itUser != users.end(); itUser++)
-                            getUsersInfo(*itChannels);
+
                         User *userPtr = &user;
                         itChannels->addUser(userPtr);
                         sendToClient(user, clientSocket, " JOIN You are now in channel " + *itArgs);
                         sendToClient(user, clientSocket, RPL_TOPIC(user.getNickName(), itChannels->getName(), itChannels->getTopic()));
-                        getUsersInfo(*itChannels);
-                        sendToClient(user, clientSocket, RPL_ENDOFNAMES(itChannels->getName(), itChannels->getName()));
+                        sendUsersInfo((*itChannels), user);
                         return;
                     }
                     else if (itChannels->getName() == *itArgs && itChannels->userOnTheChannel(user.getNickName()))
@@ -55,11 +45,13 @@ void Commands::Join(User &user, vector<Channel> &channels, int clientSocket)
                     }
                 }
                 User *userPtr = &user;
-                channels.push_back(Channel((*itArgs), userPtr));
+                Channel newChannel = Channel((*itArgs), userPtr);
+                channels.push_back(newChannel);
                 sendToClient(user, clientSocket, " JOIN You are now in channel " + *itArgs);
-                sendToClient(user, clientSocket, RPL_TOPIC(user.getNickName(), (*itArgs), ""));//
-                getUsersInfo(channels.back());//
-                sendToClient(user, clientSocket, RPL_ENDOFNAMES(user.getNickName(), (*itArgs)));//
+                sendToClient(user, clientSocket, RPL_NOTOPIC(user.getNickName(), (*itArgs)));
+                sendUsersInfo(newChannel, user);
+                //getUsersInfo(channels.back());//
+                //sendToClient(user, clientSocket, RPL_ENDOFNAMES(user.getNickName(), (*itArgs)));//
 
             }
         }

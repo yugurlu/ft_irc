@@ -11,6 +11,9 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <algorithm>
+#include <ctime>
+#include <cstdio>
 #include "user.hpp"
 #include "commands.hpp"
 #include "channel.hpp"

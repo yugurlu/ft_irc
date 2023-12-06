@@ -24,7 +24,7 @@ void Commands::Nick(map<int, User> &users, int clientSocket) {
         else 
         {
             users[clientSocket].setNickName(*itArgs);
-            string message = " NICK " + users[clientSocket].getNickName() + " ; Requesting the new nick \"" + users[clientSocket].getNickName();
+            string message = " NICK " + users[clientSocket].getNickName() + " ; Requesting the new nick " + users[clientSocket].getNickName();
             sendToClient(users[clientSocket], clientSocket, message);
             if (users[clientSocket]._isUser) 
             {

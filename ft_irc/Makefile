@@ -7,20 +7,20 @@ FILE = server.cpp \
 	user.cpp \
 	commands.cpp \
 	channel.cpp \
-	./commands/nick.cpp \
-	./commands/pass.cpp \
-	./commands/user.cpp \
-	./commands/quit.cpp \
-	./commands/ping.cpp \
-	./commands/join.cpp \
-	./commands/kick.cpp \
-	./commands/part.cpp \
-	./commands/privmsg.cpp \
-	./commands/topic.cpp \
-	./commands/mode.cpp \
-	./commands/cap.cpp \
-	./commands/notice.cpp \
-	./commands/who.cpp 
+	./Commands/nick.cpp \
+	./Commands/pass.cpp \
+	./Commands/user.cpp \
+	./Commands/quit.cpp \
+	./Commands/ping.cpp \
+	./Commands/join.cpp \
+	./Commands/kick.cpp \
+	./Commands/part.cpp \
+	./Commands/privmsg.cpp \
+	./Commands/topic.cpp \
+	./Commands/mode.cpp \
+	./Commands/cap.cpp \
+	./Commands/notice.cpp \
+	./Commands/who.cpp 
 RM = rm -rf
 
 all: $(NAME)
