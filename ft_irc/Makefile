@@ -1,8 +1,9 @@
+
 NAME = ircserv
 CC = c++
-CPPFLAGS = -Wall -Wextra -Werror -std=c++98 -g 
-OBJECTS = $(FILE:.cpp=.o)
-FILE = server.cpp \
+FLAGS = -Wall -Wextra -Werror -std=c++98
+
+SRCS = server.cpp \
 	main.cpp \
 	user.cpp \
 	commands.cpp \
@@ -20,19 +21,29 @@ FILE = server.cpp \
 	./Commands/mode.cpp \
 	./Commands/cap.cpp \
 	./Commands/notice.cpp \
-	./Commands/who.cpp 
-RM = rm -rf
+	./Commands/who.cpp
 
-all: $(NAME)
+OBJS = ${SRCS:.cpp=.o}
 
-$(NAME): $(FILE)
-	$(CC) $(CPPFLAGS) -o $(NAME) $(FILE)
-.c.o:
-	${CC} ${CPPFLAGS} -C $< -o ${OBJECTS}
+.cpp.o:
+	@${CC} ${FLAGS} -c $< -o ${<:.cpp=.o}
+
+RM = rm -f
+
+${NAME}: ${OBJS}
+	@${CC} ${FLAGS} -o ${NAME} ${OBJS}
+
+all: ${NAME}
+	@echo "\033[33mCompile Completed!\033[0m"
+
+bonus: all
+
 clean:
-	$(RM) -f *.o
+	@${RM} *.o */*.o */*/*.o
+
 fclean: clean
-	rm -rf $(NAME)
+	@${RM} ${NAME}
+
 re: fclean all
 
 .PHONY: all clean fclean re

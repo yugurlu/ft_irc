@@ -42,8 +42,8 @@ class Commands {
         void Mode(User&, vector<Channel> &, int);
         void Quit(User&, vector<Channel> &, int);
         void Topic(User&, vector<Channel> &, int);
-        void Privmsg(User&, vector<Channel> &, map<int, User> &, int);
         void Notice(User&, vector<Channel> &, map<int, User> &);
+        void Privmsg(User&, vector<Channel> &, map<int, User> &, int);
         void Who(map<int, User> &, vector<Channel> &, User &, int);
 
         void sendUsersInfo(Channel &, User &, int);

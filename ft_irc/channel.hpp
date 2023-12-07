@@ -43,6 +43,7 @@ class Channel
         vector<User *> getAdmins(void);
 
         void sendMessageToChannel(User &, string, string);
+        
 };
 
 #endif

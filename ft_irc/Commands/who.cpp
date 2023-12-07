@@ -20,7 +20,7 @@ void Commands::Who(map<int, User> &users, vector<Channel> &channels, User &user,
             vector<User *> usersInChannel = channel->getUsers();
             for(vector<User *>::iterator itUsers = usersInChannel.begin(); itUsers != usersInChannel.end(); itUsers++)
                 sendToClient(user, clientSocket, RPL_WHOREPLY((*itUsers)->getNickName(), channel->getName(), (*itUsers)->getUserName(), (*itUsers)->getHostName(), "localhost", (*itUsers)->getNickName(), "*", "0 ", (*itUsers)->getRealName()));
-            sendToClient(user, clientSocket, RPL_ENDOFWHO((*itUsers)->getNickName(), channel->getName()));
+            sendToClient(user, clientSocket, RPL_ENDOFWHO(user.getNickName(), channel->getName()));
             return;
         }
     

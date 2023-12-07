@@ -18,6 +18,8 @@ void Commands::Kick(User &user, vector<Channel> &channels, int clientSocket)
                 User *kickUser = channel->getUser(kickNickName); 
                 channel->sendMessageToChannel(user, "KICK " + channel->getName() + " " + kickUser->getNickName() + " :" + reason, "");
                 channel->removeUser(kickNickName);
+                if (channel->userIsTheAdmin(kickNickName))
+                    channel->removeAdmin(kickNickName);
                 isThereUserInChannel(channels, *channel);
             }
         }
