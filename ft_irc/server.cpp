@@ -15,7 +15,6 @@ Server::Server(int port) {
     memset(&_serverAddr, 0, sizeof(_serverAddr));
 
     _serverSocket = socket(AF_INET, SOCK_STREAM, 0);
-    cout << "[DEBUG]SERVER SOCKET : " << _serverSocket << endl;
     if (_serverSocket < 0) {
         perror("Error: Socket can't created");
         exit(1);
