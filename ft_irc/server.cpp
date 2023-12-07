@@ -105,7 +105,6 @@ void Server::Start() {
                 string message(buffer);
                 if(message.size() && message[0] != '\n' && *(message.end() - 1) == '\n')
                 {
-                    cout << message;
                     Cmd(ctrlD + message, _clientSocket, _password);
                     ctrlD.clear();
                 }
