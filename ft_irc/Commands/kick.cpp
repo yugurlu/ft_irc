@@ -12,17 +12,25 @@ void Commands::Kick(User &user, vector<Channel> &channels, int clientSocket)
                 reason = args[3];
             Channel *channel = findChannel(channels);
             if(!channel)
-                sendToClient(user, clientSocket, ERR_NOSUCHCHANNEL(channel->getName()));
+            {
+                sendToClient(user, clientSocket, ERR_NOSUCHCHANNEL(args[2]));
+                return;
+            }
             else if (channel->userIsTheAdmin(user.getNickName()))
             {
-                User *kickUser = channel->getUser(kickNickName); 
-                channel->sendMessageToChannel(user, "KICK " + channel->getName() + " " + kickUser->getNickName() + " :" + reason, "");
-                channel->removeUser(kickNickName);
-                if (channel->userIsTheAdmin(kickNickName))
-                    channel->removeAdmin(kickNickName);
-                isThereUserInChannel(channels, *channel);
+                User *kickUser = channel->getUser(kickNickName);
+                if (kickUser)
+                {
+                    channel->sendMessageToChannel(user, "KICK " + channel->getName() + " " + kickUser->getNickName() + " :" + reason, "");
+                    channel->removeUser(kickNickName);
+                    if (channel->userIsTheAdmin(kickNickName))
+                        channel->removeAdmin(kickNickName);
+                    isThereUserInChannel(channels, *channel);
+                }
+                else
+                    sendToClient(user, clientSocket, ERR_NOSUCHNICK(kickNickName));  
             }
         }
-        else sendToClient(user, clientSocket, ERR_NEEDMOREPARAMS(args[0]));
+        else sendToClient(user, clientSocket, ERR_NEEDMOREPARAMS(args[1]));
    }
 }

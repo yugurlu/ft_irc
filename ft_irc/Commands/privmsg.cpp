@@ -23,7 +23,7 @@ void Commands::Privmsg(User &user, vector<Channel> &channels, map<int, User> &us
                         return;
                     }
                 }
-                sendToClient(user, clientSocket, "ERR_NOSUCHCHANNEL()");
+                sendToClient(user, clientSocket, ERR_NOSUCHCHANNEL(args[1]));
             }
             else
             {
@@ -35,7 +35,7 @@ void Commands::Privmsg(User &user, vector<Channel> &channels, map<int, User> &us
                         return;
                     }
                 }
-                sendToClient(user, clientSocket, ERR_NOSUCHNICK(user.getNickName()));
+                sendToClient(user, clientSocket, ERR_NOSUCHNICK(args[1]));
             }
         }
         else

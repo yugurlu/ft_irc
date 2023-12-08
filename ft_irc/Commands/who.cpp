@@ -14,7 +14,7 @@ void Commands::Who(map<int, User> &users, vector<Channel> &channels, User &user,
             Channel *channel = findChannel(channels);
             if(!channel)
             {
-                sendToClient(user, clientSocket, ERR_NOSUCHCHANNEL(channel->getName()));
+                sendToClient(user, clientSocket, ERR_NOSUCHCHANNEL(args[1]));
                 return;
             }
             vector<User *> usersInChannel = channel->getUsers();

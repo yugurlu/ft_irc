@@ -10,23 +10,28 @@ void Commands::Topic(User &user, vector<Channel> &channels, int clientSocket)
             return;
         }
         Channel *channel = findChannel(channels);
-        if (!channel->userOnTheChannel(user.getNickName()))
-        {
-            sendToClient(user, clientSocket, ERR_NOTONCHANNEL(channel->getName()));
-            return;
-        }
-        vector<string>::iterator itArgs = args.begin() + 2;
-        if (itArgs != args.end())
-        {
-            if (channel->userIsTheAdmin(user.getNickName()))
+        if (channel)
+        {   
+            if (!channel->userOnTheChannel(user.getNickName()))
             {
-                channel->setTopic(*itArgs);
-                sendToClient(user, clientSocket, RPL_TOPIC(user.getNickName(), channel->getName(), channel->getTopic()));
+                sendToClient(user, clientSocket, ERR_NOTONCHANNEL(channel->getName()));
+                return;
+            }
+            vector<string>::iterator itArgs = args.begin() + 2;
+            if (itArgs != args.end())
+            {
+                if (channel->userIsTheAdmin(user.getNickName()))
+                {
+                    channel->setTopic(*itArgs);
+                    sendToClient(user, clientSocket, RPL_TOPIC(user.getNickName(), channel->getName(), channel->getTopic()));
+                }
+                else
+                    sendToClient(user, clientSocket, ERR_CHANOPRIVSNEEDED(channel->getName()));
             }
             else
-                sendToClient(user, clientSocket, ERR_CHANOPRIVSNEEDED(channel->getName()));
-        }
-        else
-            sendToClient(user, clientSocket, RPL_TOPIC(user.getNickName(), channel->getName(), channel->getTopic()));
+                sendToClient(user, clientSocket, RPL_TOPIC(user.getNickName(), channel->getName(), channel->getTopic()));
+            }
+            else 
+                sendToClient(user, clientSocket, ERR_NOSUCHCHANNEL(args[1]));
     }
 }

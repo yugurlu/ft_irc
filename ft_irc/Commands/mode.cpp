@@ -10,43 +10,48 @@ void Commands::Mode(User& user, vector<Channel> &channels, int clientSocket)
             return;
         }
         Channel *channel = findChannel(channels);
-        if(!channel->userIsTheAdmin(user.getNickName()))
-        {
-            sendToClient(user, clientSocket, ERR_CHANOPRIVSNEEDED(channel->getName()));
-            return;
-        }
-        vector<string>::iterator itArgs = args.begin() + 2;
-        if (itArgs != args.end() && *itArgs == "+o")
-        {
-            itArgs++;
-            if (itArgs != args.end())
+        if (channel)
+        { 
+            if(!channel->userIsTheAdmin(user.getNickName()))
             {
-                if (channel->userOnTheChannel(*itArgs))
+                sendToClient(user, clientSocket, ERR_CHANOPRIVSNEEDED(channel->getName()));
+                return;
+            }
+            vector<string>::iterator itArgs = args.begin() + 2;
+            if (itArgs != args.end() && *itArgs == "+o")
+            {
+                itArgs++;
+                if (itArgs != args.end())
                 {
-                    channel->addAdmin(*itArgs);
-                    channel->sendMessageToChannel(user, "MODE " + channel->getName() + " +o " + *itArgs, "");
+                    if (channel->userOnTheChannel(*itArgs))
+                    {
+                        channel->addAdmin(*itArgs);
+                        channel->sendMessageToChannel(user, "MODE " + channel->getName() + " +o " + *itArgs, "");
+                    }
+                    else
+                        sendToClient(user, clientSocket, ERR_NOSUCHNICK(*itArgs));
                 }
                 else
-                    sendToClient(user, clientSocket, ERR_NOSUCHNICK(*itArgs));
+                    sendToClient(user, clientSocket, ERR_NEEDMOREPARAMS(args[0]));
             }
-            else
-                sendToClient(user, clientSocket, ERR_NEEDMOREPARAMS(args[0]));
-        }
-        else if (itArgs != args.end() && *itArgs == "-o")
-        {
-            itArgs++;
-            if (itArgs != args.end())
+            else if (itArgs != args.end() && *itArgs == "-o")
             {
-                if (channel->userOnTheChannel(*itArgs))
+                itArgs++;
+                if (itArgs != args.end())
                 {
-                    channel->removeAdmin(*itArgs);
-                    channel->sendMessageToChannel(user, "MODE " + channel->getName() + " -o " + *itArgs, "");
+                    if (channel->userOnTheChannel(*itArgs))
+                    {
+                        channel->removeAdmin(*itArgs);
+                        channel->sendMessageToChannel(user, "MODE " + channel->getName() + " -o " + *itArgs, "");
+                    }
+                    else
+                        sendToClient(user, clientSocket, ERR_NOSUCHNICK(*itArgs));
                 }
                 else
-                    sendToClient(user, clientSocket, ERR_NOSUCHNICK(*itArgs));
+                    sendToClient(user, clientSocket, ERR_NEEDMOREPARAMS(args[0]));
             }
-            else
-                sendToClient(user, clientSocket, ERR_NEEDMOREPARAMS(args[0]));
         }
+        else
+            sendToClient(user, clientSocket, ERR_NOSUCHCHANNEL(args[1]));
     }
 }

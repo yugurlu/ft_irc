@@ -14,29 +14,34 @@ void Commands::Nick(map<int, User> &users, int clientSocket) {
             }
             itUser++;
         }
-        if(users[clientSocket]._isNicked)
+        if(users[clientSocket]._isRegister)
         {
-            users[clientSocket].setNickName(*itArgs);
-            return ;
-        }
-        else 
-        {
-            users[clientSocket].setNickName(*itArgs);
-            string message = " NICK " + users[clientSocket].getNickName() + " ; Requesting the new nick " + users[clientSocket].getNickName();
-            sendToClient(users[clientSocket], clientSocket, message);
-            if (users[clientSocket]._isUser) 
+
+            if(users[clientSocket]._isNicked)
             {
-                users[clientSocket]._isRegister = true;
-                string newClientName = users[clientSocket].getNickName() + "!" + users[clientSocket].getUserName() + "@" + users[clientSocket].getHostName();
-                users[clientSocket].setClientName(newClientName);
+                users[clientSocket].setNickName(*itArgs);
+                return ;
             }
-            else if(users[clientSocket]._isNicked)
+            else
             {
-                string newClientName = users[clientSocket].getNickName() + "!" + "@" + users[clientSocket].getHostName();
-                users[clientSocket].setClientName(newClientName);
+                users[clientSocket].setNickName(*itArgs);
+                string message = " NICK " + users[clientSocket].getNickName() + " ; Requesting the new nick " + users[clientSocket].getNickName();
+                sendToClient(users[clientSocket], clientSocket, message);
+                if (users[clientSocket]._isUser)
+                {
+                    string newClientName = users[clientSocket].getNickName() + "!" + users[clientSocket].getUserName() + "@" + users[clientSocket].getHostName();
+                    users[clientSocket].setClientName(newClientName);
+                    users[clientSocket]._isAuth = true;
+                    sendToClient(users[clientSocket], clientSocket, RPL_WELCOME(users[clientSocket].getNickName(), users[clientSocket].getUserName(), users[clientSocket].getHostName()));
+                }
+                else if(users[clientSocket]._isNicked)
+                {
+                    string newClientName = users[clientSocket].getNickName() + "!" + "@" + users[clientSocket].getHostName();
+                    users[clientSocket].setClientName(newClientName);
+                }
             }
+            users[clientSocket]._isNicked = true;
         }
-        users[clientSocket]._isNicked = true;
     }
     else sendToClient(users[clientSocket], clientSocket, ERR_NONICKNAMEGIVEN());
 }
